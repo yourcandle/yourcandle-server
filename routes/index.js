@@ -21,7 +21,7 @@ router.get('/download/:filename', function (req, res, next) {
 	res.download('./' + req.params.filename, req.params.filename, function () {
 		
 		//5분뒤 삭제
-		setTimeout(fs.unlinkSync, 300000, './' + req.params.filename);
+		setTimeout(fs.unlinkSync, 60000, './' + req.params.filename);
 	});
 });
 
