@@ -18,11 +18,7 @@ router.post('/download', function (req, res, next) {
 });
 
 router.get('/download/:filename', function (req, res, next) {
-	res.download('./' + req.params.filename, function () {
-		fs.access('./' + req.params.filename, function () {
-			fs.unlinkSync('./' + req.params.filename);
-		})
-	});
+	res.download('./' + req.params.filename);
 });
 
 module.exports = router;
