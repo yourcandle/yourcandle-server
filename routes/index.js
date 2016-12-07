@@ -13,12 +13,16 @@ router.get('/health', function (req, res, next) {
 router.post('/download', function (req, res, next) {	
 	var filename = Date.now().toString(36) + '.png';
 	fs.writeFile('./' + filename, req.body.image.replace(/^data:image\/png;base64,/, ''), 'base64', function () {
-		res.redirect(302, '/download/' + filename);
+		res.render('redirect', { url: 'https://aidenahn.herokuapp.com/download/' + filename });
 	});
 });
 
 router.get('/download/:filename', function (req, res, next) {
-	res.download('./' + req.params.filename);
+	res.download('./' + req.params.filename, req.params.filename, function () {
+		
+		//5분뒤 삭제
+		setTimeout(fs.unlinkSync, 300000, './' + req.params.filename);
+	});
 });
 
 module.exports = router;
