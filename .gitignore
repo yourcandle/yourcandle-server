@@ -65,4 +65,5 @@ npm-debug.log
 # IntelliJ
 .idea
 
-
+# node-persist
+persist
