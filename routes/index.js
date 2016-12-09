@@ -1,13 +1,18 @@
 var fs = require('fs');
 var express = require('express');
 var router = express.Router();
+var storage = require('node-persist');
 
 router.get('/', function (req, res, next) {
 	res.render('index', { title: 'Express' });
 });
 
-router.get('/health', function (req, res, next) {
-	res.status(200).end();
+router.get('/count', function (req, res, next) {
+	storage.getItem('count').then(function (count) {
+		count = count ? ++count : 1;
+		res.json({ count });
+		return storage.setItem('count', count);
+	});
 });
 
 router.post('/download', function (req, res, next) {	
