@@ -1,23 +1,28 @@
 var fs = require('fs');
 var express = require('express');
 var router = express.Router();
-var storage = require('node-persist');
+var request = require('superagent');
 
 router.get('/', function (req, res, next) {
-	res.render('index', { title: 'Express' });
+	res.render('index', { title: '우리의 촛불은 꺼지지 않습니다.' });
 });
 
 router.get('/count', function (req, res, next) {
-	storage.getItem('count').then(function (count) {
-		count = count ? ++count : 1;
-		res.json({ count });
-		return storage.setItem('count', count);
+	request.put('https://api.mlab.com/api/1/databases/default/collections/yourcandle/584bfc97734d1d55b6dc8e92')
+	.set('Accept', 'application/json')	
+	.query({ apiKey: process.env.APIKEY })
+	.send({ $inc: { count: 1 } })
+	.end(function (err, mongoRes) {
+		res.json({ count: mongoRes.body.count });
 	});
 });
 
 router.get('/check', function (req, res, next) {
-	storage.getItem('count').then(function (count) {
-		res.json({ count });
+	request.get('https://api.mlab.com/api/1/databases/default/collections/yourcandle/584bfc97734d1d55b6dc8e92')
+	.set('Accept', 'application/json')
+	.query({ apiKey: process.env.APIKEY })
+	.end(function (err, mongoRes) {
+		res.json({ count: mongoRes.body.count });
 	});
 });
 
@@ -30,8 +35,7 @@ router.post('/download', function (req, res, next) {
 
 router.get('/download/:filename', function (req, res, next) {
 	res.download('./' + req.params.filename, req.params.filename, function () {
-		
-		//5분뒤 삭제
+		//1분뒤 삭제
 		setTimeout(fs.unlinkSync, 60000, './' + req.params.filename);
 	});
 });

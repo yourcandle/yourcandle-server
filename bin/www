@@ -2,28 +2,14 @@
 
 var app = require('../app');
 var debug = require('debug')('candle-server:server');
-var storage = require('node-persist');
 var http = require('http');
 var server = null;
 
-storage.init({
-    dir:'./persist',
-    stringify: JSON.stringify,
-    parse: JSON.parse,
-    encoding: 'utf8',
-    logging: false,
-    continuous: true,
-    interval: false,
-    ttl: false,
-})
-.then(function () {
-  app.set('port', normalizePort(process.env.PORT || '3000'));
-  server = http.createServer(app);
+app.set('port', normalizePort(process.env.PORT || '3000'));
+server = http.createServer(app).listen(app.get('port'));
 
-  server.listen(app.get('port'));
-  server.on('error', onError);
-  server.on('listening', onListening);
-});
+server.on('error', onError);
+server.on('listening', onListening);
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
