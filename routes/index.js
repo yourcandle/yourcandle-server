@@ -15,6 +15,12 @@ router.get('/count', function (req, res, next) {
 	});
 });
 
+router.get('/check', function (req, res, next) {
+	storage.getItem('count').then(function (count) {
+		res.json({ count });
+	});
+});
+
 router.post('/download', function (req, res, next) {	
 	var filename = Date.now().toString(36) + '.png';
 	fs.writeFile('./' + filename, req.body.image.replace(/^data:image\/png;base64,/, ''), 'base64', function () {
