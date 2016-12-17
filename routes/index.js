@@ -27,16 +27,17 @@ router.get('/check', function (req, res, next) {
 });
 
 router.post('/download', function (req, res, next) {	
-	var filename = Date.now().toString(36) + '.png';
-	fs.writeFile('./' + filename, req.body.image.replace(/^data:image\/png;base64,/, ''), 'base64', function () {
+	var filename = Date.now().toString(36) + '.jpg';
+	fs.writeFile('./' + filename, req.body.image.replace(/^data:image\/jpeg;base64,/, ''), 'base64', function () {
 		res.render('redirect', { url: 'https://aidenahn.herokuapp.com/download/' + filename });
 	});
 });
 
 router.get('/download/:filename', function (req, res, next) {
-	res.download('./' + req.params.filename, req.params.filename, function () {
+	var filename = req.params.filename;
+	res.download('./' + filename, filename, function () {
 		//1분뒤 삭제
-		setTimeout(fs.unlinkSync, 60000, './' + req.params.filename);
+		setTimeout(fs.unlinkSync, 60000, './' + filename);
 	});
 });
 
